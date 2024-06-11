@@ -4,13 +4,13 @@ import {
   UntypedServiceImplementation,
   ServiceDefinition,
   sendUnaryData,
-  handleCall,
+  handleUnaryCall,
   MethodDefinition,
   ServerReadableStream,
   ServerDuplexStream,
   ServerUnaryCall,
   ServerWritableStream,
-} from 'grpc';
+} from '@grpc/grpc-js';
 import { EventEmitter } from 'events';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,10 +18,10 @@ type Next = (error?: Error) => Promise<any>;
 
 type ServerCall =
   | ServerNonStreamCall
-  | ServerWritableStream<unknown>
+  | ServerWritableStream<unknown, unknown>
   | ServerDuplexStream<unknown, unknown>;
 
-type ServerNonStreamCall = ServerUnaryCall<unknown> | ServerReadableStream<unknown>;
+type ServerNonStreamCall = ServerUnaryCall<unknown, unknown> | ServerReadableStream<unknown, unknown>;
 
 // type guard for method definition with property 'originalName'
 const isDefinitionWithOriginalName = (def: any): def is { originalName: string } => {
@@ -78,6 +78,7 @@ export default class ExperimentalServer extends Server {
         };
       }
     }
+    //@ts-ignore
     super.addService(service, newImpletations);
   }
 
@@ -86,7 +87,7 @@ export default class ExperimentalServer extends Server {
   }
 
   protected createHandleCall(
-    original: handleCall<unknown, unknown>,
+    original: handleUnaryCall<unknown, unknown>,
     definition: MethodDefinition<unknown, unknown>
   ) {
     return (call: ServerCall, grpcCallback?: sendUnaryData<unknown>): void => {
@@ -112,7 +113,7 @@ export default class ExperimentalServer extends Server {
               // REAL SEND RESPONSE
               grpcCallback(null, value, ...rest);
               ctx.response = value;
-              resolve();
+              resolve('');
               (call as EventEmitter).emit('finish');
             };
             // @ts-ignore
@@ -130,7 +131,7 @@ export default class ExperimentalServer extends Server {
             // @ts-ignore
             grpcCallback(e);
           } else {
-            (call as ServerWritableStream<unknown>).emit('error', e);
+            (call as ServerWritableStream<unknown, unknown>).emit('error', e);
           }
         }
         // ignore post-process error

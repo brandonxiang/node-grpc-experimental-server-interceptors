@@ -1,20 +1,20 @@
 import {
   ServerUnaryCall,
   sendUnaryData,
-  ServerWriteableStream,
+  ServerWritableStream,
   ServiceError,
   status,
   handleUnaryCall,
-} from 'grpc';
+} from '@grpc/grpc-js';
 import {
   Point,
   Feature,
   Rectangle,
 } from '../../../__tests__/fixtures/static_codegen/route_guide_pb';
 import runTest from '../../../__tests__/helpers/runTest';
-import { ClientReadableStream } from 'grpc';
+import { ClientReadableStream } from '@grpc/grpc-js';
 import { createInterface } from 'readline';
-import { ClientWritableStream } from 'grpc';
+import { ClientWritableStream } from '@grpc/grpc-js';
 
 describe('grpc-experimental-server', () => {
   describe('should not timeout', () => {
@@ -35,7 +35,7 @@ describe('grpc-experimental-server', () => {
 
     runTest({
       implementations: {
-        listFeatures(call: ServerWriteableStream<Feature>) {
+        listFeatures(call: ServerWritableStream<Feature, any>) {
           call.end();
           return new Promise(resolve => setTimeout(resolve, 30000));
         },

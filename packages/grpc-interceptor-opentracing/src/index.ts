@@ -1,14 +1,15 @@
 import { Tracer, globalTracer, FORMAT_HTTP_HEADERS, Span, Tags } from 'opentracing';
-import { Interceptor } from 'ges';
+import { Interceptor } from '@brandonxiang/ges';
+import '@grpc/grpc-js'
 
-declare module 'grpc' {
-  interface ServerUnaryCall<RequestType> {
+declare module '@grpc/grpc-js' {
+  interface ServerUnaryCall<RequestType, ResponseType> {
     span?: Span;
   }
-  interface ServerWritableStream<RequestType> {
+  interface ServerWritableStream<RequestType, ResponseType> {
     span?: Span;
   }
-  interface ServerReadableStream<RequestType> {
+  interface ServerReadableStream<RequestType, ResponseType> {
     span?: Span;
   }
   interface ServerDuplexStream<RequestType, ResponseType> {

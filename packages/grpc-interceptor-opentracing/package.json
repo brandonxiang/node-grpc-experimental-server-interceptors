@@ -27,15 +27,18 @@
     "url": "https://github.com/edvardchen/node-grpc-experimental-server-interceptors/issues"
   },
   "scripts": {
-    "prepublish": "tsc"
+    "prepublish1": "tsc"
   },
   "peerDependencies": {
     "opentracing": "^0.14.4"
   },
   "devDependencies": {
-    "@types/jaeger-client": "^3.15.1",
-    "ges": "^1.3.1",
-    "grpc": "^1.22.2",
-    "jaeger-client": "^3.15.0"
+    "@brandonxiang/ges": "3.0.0",
+    "@types/jaeger-client": "^3.18.5",
+    "jaeger-client": "^3.19.0"
+  },
+  "dependencies": {
+    "grpc": "^1.24.11",
+    "@grpc/grpc-js": "^1.1.5"
   }
 }
